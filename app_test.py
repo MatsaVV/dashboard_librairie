@@ -3,8 +3,10 @@ from dash import html, html, Input, Output,callback, dcc, Dash, dash_table
 from dash.dependencies import Input, Output
 import pandas as pd
 import plotly.express as px
+import re
 
-df = pd.read_csv('Données_clean.csv', encoding='ISO-8859-1')
+df = pd.read_csv('Donnees_clean.csv', encoding='ISO-8859-1')
+df['Montant'] = pd.to_numeric(df['Montant'], errors='coerce')
 
 app = Dash(__name__)
 
@@ -39,13 +41,12 @@ app.layout = html.Div(style={}, children=[
                     value=df['sex'].unique().tolist(),
                     multi=True
                     ),
-                dcc.RangeSlider(
-                    id='montant-filter',
-                    min=df['Montant'].min(),
-                    max=df['Montant'].max(),
-                    value=[df['Montant'].min(), df['Montant'].max()],
-                    marks={i: str(i) for i in range(int(df['Montant'].min()), int(df['Montant'].max()), 10000)},
-                    step=200
+
+                dcc.Dropdown(
+                   id='montant-filter',
+                    options=[{'label': Montant_tranche, 'value': Montant_tranche} for Montant_tranche in df['Montant_tranche'].unique()],
+                    value=df['Montant_tranche'].unique().tolist(),
+                    multi=True
                     ),
 
 
@@ -93,7 +94,7 @@ app.layout = html.Div(style={}, children=[
 )
 def toggle_paragraph(n_clicks):
     if n_clicks is None:
-        return {'display': 'none'}  # Par défaut, le contenu est masqué
+        return {'display': 'none'}
     elif n_clicks % 2 == 1:
         return {'display': 'block'}
     else:
@@ -109,8 +110,7 @@ def toggle_paragraph(n_clicks):
 def update_pie_chart(selected_tranche_age, selected_sexe, selected_montant):
     filtered_df = df[df['TrancheAge'].isin(selected_tranche_age) &
                      df['sex'].isin(selected_sexe) &
-                     (df['Montant'] >= selected_montant[0]) &
-                     (df['Montant'] <= selected_montant[1])]
+                     df['Montant_tranche'].isin(selected_montant)]
 
     pie_data = filtered_df[['Prix_Categ0', 'Prix_Categ1', 'Prix_Categ2']].sum().reset_index()
     pie_data.columns = ['Category', 'Value']
@@ -128,17 +128,15 @@ def update_pie_chart(selected_tranche_age, selected_sexe, selected_montant):
 def update_histogram(selected_tranche_age, selected_sexe, selected_montant):
     filtered_df = df[df['TrancheAge'].isin(selected_tranche_age) &
                      df['sex'].isin(selected_sexe) &
-                     (df['Montant'] >= selected_montant[0]) &
-                     (df['Montant'] <= selected_montant[1])]
+                     df['Montant_tranche'].isin(selected_montant)]
 
-    fig = px.histogram(filtered_df, x='Fréquence',
+    fig = px.histogram(filtered_df, x='Frequence',
                        nbins=30,
                        title='Histogramme de Fréquence')
 
     fig.update_layout(bargap=0.2)
     return fig
 
-# Callback pour le Scatter Plot
 @app.callback(
     Output('scatter-plot', 'figure'),
     [Input('age-filter', 'value'),
@@ -146,15 +144,14 @@ def update_histogram(selected_tranche_age, selected_sexe, selected_montant):
      Input('montant-filter', 'value')]
 )
 def update_scatter_plot(selected_tranche_age, selected_sexe, selected_montant):
-    filtered_df = df[df['TrancheAge'].isin(selected_tranche_age) &
-                     df['sex'].isin(selected_sexe) &
-                     (df['Montant'] >= selected_montant[0]) &
-                     (df['Montant'] <= selected_montant[1])]
+    #selected_montant = [int(m) for m in selected_montant]
 
+    filtered_df = df[(df['TrancheAge'].isin(selected_tranche_age)) &
+                     (df['sex'].isin(selected_sexe)) &
+                     (df['Montant_tranche'].isin(selected_montant))]
 
-    fig = px.scatter(filtered_df, x='Fréquence', y='Récence',
-
-                     )
+    fig = px.scatter(filtered_df, x='Frequence', y='Recence',
+                     title='Scatter Plot de Fréquence vs Récence')
 
     fig.update_layout(title='Scatter Plot de Fréquence vs Récence')
     return fig
