@@ -80,7 +80,7 @@ body {
 .b1d_contexte {
   /*background-color: lightseagreen;*/
   width:99%;
-  height: 10%;
+  height: 20%;
   border-radius: 20px;
   position:absolute;
   padding:5px;
@@ -89,7 +89,7 @@ body {
   /*background-color: lightsalmon;*/
   width:99%;
   height: auto;
-  top:25%;
+  top:45%;
   border-radius: 20px;
   position:absolute;
 }
@@ -98,7 +98,7 @@ body {
 .bloc2{
   /*background-color: lightblue;*/
   opacity: 70%;
-  top:550px;
+  top:650px;
   width: 90%;
   height: auto;
   border-radius: 20px;
@@ -127,7 +127,7 @@ body {
   /*background-color: lightcoral;*/
   opacity: 70%;
   margin-top: 20px;
-  top:1050px;
+  top:1150px;
   width: 90%;
   height: 200px;
   border-radius: 20px;
