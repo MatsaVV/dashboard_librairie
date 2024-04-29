@@ -9,7 +9,7 @@ Ce projet est un tableau de bord interactif pour l'analyse des ventes d'une libr
 - `assets/` : Contient des ressources statiques comme les polices de caractères et CSS.
 - `dash_env/` : Répertoire de l'environnement virtuel avec les configurations locales.
 - `data/` : Dossiers des fichiers CSV avec les données nettoyées et exposées.
-- `*app_test.py` : Scripts Python de l'app, structure et visualisation
+- `app_test.py` : Scripts Python de l'app, structure et visualisation
 
 ## Licence
 
